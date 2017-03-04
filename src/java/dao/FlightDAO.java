@@ -11,7 +11,6 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import model.Client;
 import model.Database;
 import model.Flight;
 
@@ -38,6 +37,10 @@ public class FlightDAO {
   
   public CompletableFuture<Boolean> updateFlight(Flight flight) {
     return CompletableFuture.supplyAsync( updateFlightSupplier(flight) );
+  }
+  
+  public CompletableFuture<Boolean> deleteFlight(Flight flight) {
+    return CompletableFuture.supplyAsync( deleteFlightSupplier(flight) );
   }
   
   private Supplier<Stream<Flight>> getAllFlightsSupplier() {
@@ -96,6 +99,21 @@ public class FlightDAO {
                   .findFirst()
                   .get();
           flightRef.setCompany(flight.getCompany());
+          return true;
+        } catch (Exception e) {
+          e.printStackTrace();
+          return false;
+        }
+      }
+    };
+  }
+  
+  private Supplier<Boolean> deleteFlightSupplier(Flight flight) {
+    return new Supplier<Boolean>() {
+      @Override
+      public Boolean get() {
+        try {
+          database.getFlightList().removeIf(f -> f.equals(flight));
           return true;
         } catch (Exception e) {
           e.printStackTrace();

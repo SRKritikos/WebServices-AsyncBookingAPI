@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import javax.ejb.EJB;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -59,11 +60,15 @@ public class ClientAPI {
   @Produces(MediaType.APPLICATION_JSON) 
   public void getClientById(@Suspended final AsyncResponse asyncResponse, @PathParam("id") int id ) {
     Gson gson = new Gson();
-    clientDAO.getCliendById(id).thenApply(client -> asyncResponse.resume(
-      Response.ok()
-              .entity( gson.toJson(client))
-              .build()
-    ))
+    clientDAO.getCliendById(id).thenApply(client -> {
+      Response response;
+      if (client != null) {
+        response = Response.ok().entity( gson.toJson(client)).build();
+      } else {
+        response = Response.status(Response.Status.NOT_FOUND).build();
+      }
+      return asyncResponse.resume(response);
+    })
     .exceptionally(ex -> asyncResponse.resume(
       Response.status(Response.Status.INTERNAL_SERVER_ERROR)
               .entity(ex)
@@ -109,7 +114,7 @@ public class ClientAPI {
       if (success) {
         response = Response.status(Response.Status.NO_CONTENT).build();
       } else {
-        response = Response.serverError().build();
+        response = Response.status(Response.Status.NOT_FOUND).build();
       }
       return asyncResponse.resume(response);
     })
@@ -118,5 +123,27 @@ public class ClientAPI {
               .entity(ex)
               .build()
     ));
+  }
+  
+  @DELETE
+  @ManagedAsync
+  @Path("{id}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public void deleteClient(@Suspended final AsyncResponse asyncResponse, @PathParam("id") int id) {
+    clientDAO.getCliendById(id).thenApply(client -> clientDAO.deleteClient(client).thenApply(success -> {
+        Response response;
+        if (success) {
+          response = Response.status(Response.Status.OK).build();
+        } else {
+          response = Response.status(Response.Status.NOT_FOUND).build();
+        }
+        return asyncResponse.resume(response);
+      })
+      .exceptionally(ex -> asyncResponse.resume(
+        Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                .entity(ex)
+                .build()
+      ))
+    );
   }
 }

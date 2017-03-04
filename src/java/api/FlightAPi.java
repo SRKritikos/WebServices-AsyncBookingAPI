@@ -13,6 +13,7 @@ import java.net.URISyntaxException;
 import java.util.stream.Collectors;
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -42,7 +43,7 @@ public class FlightAPi {
     Gson gson = new Gson();
     flightDAO.getFlights().thenApply(clientStream -> asyncResponse.resume(
       Response.ok()
-              .entity(gson.toJson( clientStream.collect(Collectors.toList())))
+              .entity(gson.toJson( clientStream.collect(Collectors.toList()) ))
               .build()
     ))
     .exceptionally(ex -> asyncResponse.resume(
@@ -58,11 +59,15 @@ public class FlightAPi {
   @Produces(MediaType.APPLICATION_JSON) 
   public void getFlightById(@Suspended final AsyncResponse asyncResponse, @PathParam("id") int id ) {
     Gson gson = new Gson();
-    flightDAO.getFlightById(id).thenApply(client -> asyncResponse.resume(
-      Response.ok()
-              .entity(gson.toJson(client))
-              .build()
-    ))
+    flightDAO.getFlightById(id).thenApply(client -> {
+      Response response;
+      if (client != null) {
+        response = Response.ok().entity(gson.toJson(client)).build();
+      } else {
+        response = Response.status(Response.Status.NOT_FOUND).build();
+      }
+      return asyncResponse.resume(response);
+    })
     .exceptionally(ex -> asyncResponse.resume(
       Response.status(Response.Status.INTERNAL_SERVER_ERROR)
               .entity(ex)
@@ -117,5 +122,27 @@ public class FlightAPi {
               .entity(ex)
               .build()
     ));
+  }
+  
+  @DELETE
+  @ManagedAsync
+  @Path("{id}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public void deleteFlight(@Suspended final AsyncResponse asyncResponse, @PathParam("id") int id) {
+    flightDAO.getFlightById(id).thenApply(flight -> flightDAO.deleteFlight(flight).thenApply(success -> {
+        Response response;
+        if (success) {
+          response = Response.status(Response.Status.OK).build();
+        } else {
+          response = Response.status(Response.Status.NOT_FOUND).build();
+        }
+        return asyncResponse.resume(response);
+      })
+      .exceptionally(ex -> asyncResponse.resume(
+        Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                .entity(ex)
+                .build()
+      ))
+    );
   }
 }

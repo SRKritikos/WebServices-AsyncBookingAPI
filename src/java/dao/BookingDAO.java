@@ -39,6 +39,10 @@ public class BookingDAO {
     return CompletableFuture.supplyAsync( updateBookingSupplier(booking) );
   }
   
+  public CompletableFuture<Boolean> deleteBooking(Booking booking) {
+    return CompletableFuture.supplyAsync( deleteBookingSupplier(booking) );
+  }
+  
   private Supplier<Stream<Booking>> getAllBookings() {
     return new Supplier<Stream<Booking>>() {
       @Override
@@ -91,6 +95,21 @@ public class BookingDAO {
                   .orElse(null);
           bookingRef.setClient(booking.getClient());
           bookingRef.setFlight(booking.getFlight());
+          return true;
+        } catch (Exception e) {
+          e.printStackTrace();
+          return false;
+        }
+      }
+    };
+  }
+  
+  private Supplier<Boolean> deleteBookingSupplier(Booking booking) {
+    return new Supplier<Boolean>() {
+      @Override
+      public Boolean get() {
+        try {
+          database.getBookingsList().removeIf(b -> b.equals(booking));
           return true;
         } catch (Exception e) {
           e.printStackTrace();

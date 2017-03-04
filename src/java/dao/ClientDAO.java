@@ -33,6 +33,10 @@ public class ClientDAO {
     return CompletableFuture.supplyAsync( updateClientSupplier(client) );
   }
   
+  public CompletableFuture<Boolean> deleteClient(Client client) {
+      return CompletableFuture.supplyAsync( deleteClientSupplier(client) );
+  }
+  
   private Supplier<Stream<Client>> getAllClientsSupplier() {
     return new Supplier<Stream<Client>>() {
       @Override
@@ -89,6 +93,21 @@ public class ClientDAO {
                   .findFirst()
                   .get();
           clientRef.setClientName(client.getClientName());
+          return true;
+        } catch (Exception e) {
+          e.printStackTrace();
+          return false;
+        }
+      }
+    };
+  }
+  
+  private Supplier<Boolean> deleteClientSupplier(Client client) {
+    return new Supplier<Boolean>() {
+      @Override
+      public Boolean get() {
+        try {
+          database.getClientList().removeIf(c -> c.equals(client));
           return true;
         } catch (Exception e) {
           e.printStackTrace();

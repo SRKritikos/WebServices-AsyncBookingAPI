@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import javax.ejb.EJB;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -57,11 +58,15 @@ public class BookingAPI {
   @Produces(MediaType.APPLICATION_JSON) 
   public void getBookingById(@Suspended final AsyncResponse asyncResponse, @PathParam("id") int id ) {
     Gson gson = new Gson();
-    bookingDAO.getBookingById(id).thenApply(booking -> asyncResponse.resume(
-      Response.ok()
-              .entity(gson.toJson(booking))
-              .build()
-    ))
+    bookingDAO.getBookingById(id).thenApply(booking -> {
+      Response response;
+      if (booking != null) {
+        response = Response.ok().entity(gson.toJson(booking)).build();
+      } else {
+        response = Response.status(Response.Status.NOT_FOUND).build();
+      }
+      return asyncResponse.resume(response);
+    })
     .exceptionally(ex -> asyncResponse.resume(
       Response.status(Response.Status.INTERNAL_SERVER_ERROR)
               .entity(ex)
@@ -116,5 +121,26 @@ public class BookingAPI {
               .entity(ex)
               .build()
     ));
+  }
+  
+  @DELETE
+  @ManagedAsync
+  @Consumes(MediaType.APPLICATION_JSON)
+  public void deleteBooking(@Suspended final AsyncResponse asyncResponse, @PathParam("id") int id) {
+    bookingDAO.getBookingById(id).thenApply(booking -> bookingDAO.deleteBooking(booking).thenApply(success -> {
+        Response response;
+        if (success) {
+          response = Response.status(Response.Status.OK).build();
+        } else {
+          response = Response.status(Response.Status.NOT_FOUND).build();
+        }
+        return asyncResponse.resume(response);
+      })
+      .exceptionally(ex -> asyncResponse.resume(
+        Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                .entity(ex)
+                .build()
+      ))
+    );
   }
 }
