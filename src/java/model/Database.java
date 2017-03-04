@@ -6,6 +6,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 import javax.ejb.Singleton;
@@ -82,7 +83,6 @@ public class Database {
   public void setBookingsList(List<Booking> bookingsList) {
     this.bookingsList = bookingsList;
   }
-  
   
   public Stream<Client> getClients() {
     return this.clientList.stream();

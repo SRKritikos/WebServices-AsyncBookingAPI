@@ -17,12 +17,12 @@ public class Client {
 
   public Client(String clientName) {
     this.clientName = clientName;
-    this.cliendId = ids++;
+    this.cliendId = ++ids;
   }
 
   public Client(Client client) {
     this.clientName = client.clientName;
-    this.cliendId = ids++;
+    this.cliendId = ++ids;
   }
   
   public String getClientName() {

@@ -26,7 +26,7 @@ public class ClientDAO {
   }
   
   public CompletableFuture<Boolean> insertClient(Client client) {
-    return CompletableFuture.supplyAsync( insertNewClientSupplier(client));
+    return CompletableFuture.supplyAsync( insertNewClientSupplier(client) );
   }
   
   public CompletableFuture<Boolean> updateClient(Client client) {

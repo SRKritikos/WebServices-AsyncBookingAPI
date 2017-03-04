@@ -61,7 +61,7 @@ public class ClientAPI {
     Gson gson = new Gson();
     clientDAO.getCliendById(id).thenApply(client -> asyncResponse.resume(
       Response.ok()
-              .entity(gson.toJson(client))
+              .entity( gson.toJson(client))
               .build()
     ))
     .exceptionally(ex -> asyncResponse.resume(

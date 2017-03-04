@@ -38,7 +38,7 @@ public class FlightAPi {
    @GET
   @ManagedAsync
   @Produces(MediaType.APPLICATION_JSON)
-  public void getClients(@Suspended final AsyncResponse asyncResponse) {
+  public void getFlights(@Suspended final AsyncResponse asyncResponse) {
     Gson gson = new Gson();
     flightDAO.getFlights().thenApply(clientStream -> asyncResponse.resume(
       Response.ok()
@@ -56,7 +56,7 @@ public class FlightAPi {
   @ManagedAsync
   @Path("{id}")
   @Produces(MediaType.APPLICATION_JSON) 
-  public void getClientById(@Suspended final AsyncResponse asyncResponse, @PathParam("id") int id ) {
+  public void getFlightById(@Suspended final AsyncResponse asyncResponse, @PathParam("id") int id ) {
     Gson gson = new Gson();
     flightDAO.getFlightById(id).thenApply(client -> asyncResponse.resume(
       Response.ok()
@@ -70,10 +70,10 @@ public class FlightAPi {
     ));
   }
   
-    @POST
+  @POST
   @ManagedAsync
   @Consumes(MediaType.APPLICATION_JSON)
-  public void createClient(@Suspended final AsyncResponse asyncResponse, String newFlight) {
+  public void createFlight(@Suspended final AsyncResponse asyncResponse, String newFlight) {
     Gson gson = new Gson();
     Flight flight =  new Flight( gson.fromJson(newFlight, Flight.class) );
     flightDAO.insertFlight(flight).thenApply(success -> {
@@ -100,7 +100,7 @@ public class FlightAPi {
   @PUT
   @ManagedAsync
   @Consumes(MediaType.APPLICATION_JSON)
-  public void updateClient(@Suspended final AsyncResponse asyncResponse, String updateFlight) {
+  public void updateFlight(@Suspended final AsyncResponse asyncResponse, String updateFlight) {
     Gson gson = new Gson();
     Flight flight = gson.fromJson(updateFlight, Flight.class);
     flightDAO.updateFlight(flight).thenApply(success -> { 

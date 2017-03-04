@@ -30,7 +30,7 @@ public class ApplicationConfig extends Application {
      * If required, comment out calling this method in getClasses().
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
-    resources.add(api.BookingsAPI.class);
+    resources.add(api.BookingAPI.class);
     resources.add(api.ClientAPI.class);
     resources.add(api.FlightAPi.class);
     }

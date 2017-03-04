@@ -31,7 +31,7 @@ import org.glassfish.jersey.server.ManagedAsync;
  * @author Steven
  */
 @Path("bookings")
-public class BookingsAPI {
+public class BookingAPI {
   @EJB
   private BookingDAO bookingDAO;
   
@@ -55,7 +55,7 @@ public class BookingsAPI {
   @ManagedAsync
   @Path("{id}")
   @Produces(MediaType.APPLICATION_JSON) 
-  public void getClientById(@Suspended final AsyncResponse asyncResponse, @PathParam("id") int id ) {
+  public void getBookingById(@Suspended final AsyncResponse asyncResponse, @PathParam("id") int id ) {
     Gson gson = new Gson();
     bookingDAO.getBookingById(id).thenApply(booking -> asyncResponse.resume(
       Response.ok()
@@ -72,7 +72,7 @@ public class BookingsAPI {
   @POST
   @ManagedAsync
   @Consumes(MediaType.APPLICATION_JSON)
-  public void createClient(@Suspended final AsyncResponse asyncResponse, String newBooking) {
+  public void createBooking(@Suspended final AsyncResponse asyncResponse, String newBooking) {
     Gson gson = new Gson();
     Booking booking =  new Booking( gson.fromJson(newBooking, Booking.class) );
     bookingDAO.insertBooking(booking).thenApply(success -> {
@@ -99,7 +99,7 @@ public class BookingsAPI {
   @PUT
   @ManagedAsync
   @Consumes(MediaType.APPLICATION_JSON)
-  public void updateClient(@Suspended final AsyncResponse asyncResponse, String updateBooking) {
+  public void updateBooking(@Suspended final AsyncResponse asyncResponse, String updateBooking) {
     Gson gson = new Gson();
     Booking booking = gson.fromJson(updateBooking, Booking.class);
     bookingDAO.updateBooking(booking).thenApply(success -> { 

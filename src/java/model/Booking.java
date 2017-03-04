@@ -25,7 +25,7 @@ public class Booking {
   public Booking(Booking booking) {
     this.client = booking.client;
     this.flight = booking.flight;
-    ids++;
+    this.bookingId = ++ids;
   }
 
   
