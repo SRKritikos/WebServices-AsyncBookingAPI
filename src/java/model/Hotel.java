@@ -11,19 +11,19 @@ import java.util.List;
  *
  * @author srostantkritikos06
  */
-public class Flight {
+public class Hotel {
   private static int ids;
   private String company;
-  private int flightId;
+  private int hotelId;
   
-  public Flight(String company) {
+  public Hotel(String company) {
     this.company = company;
-    this.flightId = ++ids;
+    this.hotelId = ++ids;
   }
 
-  public Flight(Flight flight) {
-    this.company = flight.company;
-    this.flightId = ++ids;
+  public Hotel(Hotel hotel) {
+    this.company = hotel.company;
+    this.hotelId = ++ids;
   }
   
   public String getCompany() {
@@ -34,12 +34,12 @@ public class Flight {
     this.company = company;
   }
 
-  public int getFlightId() {
-    return flightId;
+  public int getHotelId() {
+    return hotelId;
   }
 
-  public void setFlightId(int flightId) {
-    this.flightId = flightId;
+  public void setHotelId(int hotelId) {
+    this.hotelId = hotelId;
   }
 
   public static int getIds() {

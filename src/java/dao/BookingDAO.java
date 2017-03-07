@@ -94,7 +94,7 @@ public class BookingDAO {
                   .findFirst()
                   .orElse(null);
           bookingRef.setClient(booking.getClient());
-          bookingRef.setFlight(booking.getFlight());
+          bookingRef.setHotel(booking.getHotel());
           return true;
         } catch (Exception e) {
           e.printStackTrace();

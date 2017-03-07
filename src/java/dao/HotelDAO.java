@@ -12,43 +12,43 @@ import java.util.stream.Stream;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import model.Database;
-import model.Flight;
+import model.Hotel;
 
 /**
  *
  * @author Steven Kritikos
  */
 @Stateless
-public class FlightDAO {
+public class HotelDAO {
   @EJB
   Database database;
   
-  public CompletableFuture<Stream<Flight>> getFlights() {
-    return CompletableFuture.supplyAsync( getAllFlightsSupplier() );
+  public CompletableFuture<Stream<Hotel>> getHotels() {
+    return CompletableFuture.supplyAsync( getAllHotelsSupplier() );
   }
   
-  public CompletableFuture<Flight> getFlightById(int id) {
-    return CompletableFuture.supplyAsync( getFlightByIdSupplier(id) );
+  public CompletableFuture<Hotel> getHotelById(int id) {
+    return CompletableFuture.supplyAsync( getHotelByIdSupplier(id) );
   }
   
-  public CompletableFuture<Boolean> insertFlight(Flight flight) {
-    return CompletableFuture.supplyAsync( insertNewFlightSupplier(flight));
+  public CompletableFuture<Boolean> insertHotel(Hotel hotel) {
+    return CompletableFuture.supplyAsync( insertNewHotelSupplier(hotel));
   }
   
-  public CompletableFuture<Boolean> updateFlight(Flight flight) {
-    return CompletableFuture.supplyAsync( updateFlightSupplier(flight) );
+  public CompletableFuture<Boolean> updateHotel(Hotel hotel) {
+    return CompletableFuture.supplyAsync( updateHotelSupplier(hotel) );
   }
   
-  public CompletableFuture<Boolean> deleteFlight(Flight flight) {
-    return CompletableFuture.supplyAsync( deleteFlightSupplier(flight) );
+  public CompletableFuture<Boolean> deleteHotel(Hotel hotel) {
+    return CompletableFuture.supplyAsync( deleteHotelSupplier(hotel) );
   }
   
-  private Supplier<Stream<Flight>> getAllFlightsSupplier() {
-    return new Supplier<Stream<Flight>>() {
+  private Supplier<Stream<Hotel>> getAllHotelsSupplier() {
+    return new Supplier<Stream<Hotel>>() {
       @Override
-      public Stream<Flight> get() {
+      public Stream<Hotel> get() {
         try {
-          return database.getFlights();
+          return database.getHotels();
         } catch (Exception e) {
           e.printStackTrace();
           throw e;
@@ -57,13 +57,13 @@ public class FlightDAO {
     };
   }
   
-  private Supplier<Flight> getFlightByIdSupplier(int id) {           
-    return new Supplier<Flight>() {
+  private Supplier<Hotel> getHotelByIdSupplier(int id) {           
+    return new Supplier<Hotel>() {
       @Override
-      public Flight get() {
+      public Hotel get() {
         try {
-          return database.getFlights()
-                  .filter(f -> f.getFlightId() == id)
+          return database.getHotels()
+                  .filter(f -> f.getHotelId() == id)
                   .findFirst()
                   .orElse(null);
         } catch (Exception e) {
@@ -74,12 +74,12 @@ public class FlightDAO {
     };
   }
   
-  private Supplier<Boolean> insertNewFlightSupplier(Flight flight) {
+  private Supplier<Boolean> insertNewHotelSupplier(Hotel hotel) {
     return new Supplier() {
       @Override
       public Boolean get() {
         try {
-          database.addFlight(flight);
+          database.addHotel(hotel);
           return true;
         } catch (Exception e) {
           e.printStackTrace();
@@ -89,16 +89,16 @@ public class FlightDAO {
     };
   }
   
-  private Supplier<Boolean> updateFlightSupplier(Flight flight) {
+  private Supplier<Boolean> updateHotelSupplier(Hotel hotel) {
     return new Supplier<Boolean>() {
       @Override
       public Boolean get() {
         try {
-          Flight flightRef = database.getFlights()
-                  .filter(f -> f.getFlightId()== flight.getFlightId())
+          Hotel hotelRef = database.getHotels()
+                  .filter(f -> f.getHotelId()== hotel.getHotelId())
                   .findFirst()
                   .get();
-          flightRef.setCompany(flight.getCompany());
+          hotelRef.setCompany(hotel.getCompany());
           return true;
         } catch (Exception e) {
           e.printStackTrace();
@@ -108,12 +108,12 @@ public class FlightDAO {
     };
   }
   
-  private Supplier<Boolean> deleteFlightSupplier(Flight flight) {
+  private Supplier<Boolean> deleteHotelSupplier(Hotel hotel) {
     return new Supplier<Boolean>() {
       @Override
       public Boolean get() {
         try {
-          database.getFlightList().removeIf(f -> f.equals(flight));
+          database.getHotelList().removeIf(f -> f.equals(hotel));
           return true;
         } catch (Exception e) {
           e.printStackTrace();

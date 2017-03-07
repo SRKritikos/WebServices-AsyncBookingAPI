@@ -18,12 +18,12 @@ import javax.ejb.Singleton;
 @Singleton
 public class Database {
   private List<Client> clientList;
-  private List<Flight> flightList;
+  private List<Hotel> hotelList;
   private List<Booking> bookingsList;
 
   public Database() {
     initClients();
-    initFlights();
+    initHotels();
     initBookings();
   }
   
@@ -34,17 +34,17 @@ public class Database {
     }
   }
   
-  private void initFlights() {
-    this.flightList = new ArrayList<>();
+  private void initHotels() {
+    this.hotelList = new ArrayList<>();
     for (int i = 0; i < 100; i++) {
-      flightList.add(new Flight("Company " + i));
+      hotelList.add(new Hotel("Company " + i));
     } 
   }
   
   private void initBookings() {
     bookingsList = new ArrayList<>();
     for (int i = 0; i < 50; i++) {
-      bookingsList.add(new Booking(clientList.get(i), flightList.get(i)));
+      bookingsList.add(new Booking(clientList.get(i), hotelList.get(i)));
     }
   }
   
@@ -52,8 +52,8 @@ public class Database {
     this.clientList.add(client);
   }
   
-  public void addFlight(Flight flight) {
-    this.flightList.add(flight);
+  public void addHotel(Hotel hotel) {
+    this.hotelList.add(hotel);
   }
   
   public void addBooking(Booking booking) {
@@ -68,12 +68,12 @@ public class Database {
     this.clientList = clientList;
   }
 
-  public List<Flight> getFlightList() {
-    return flightList;
+  public List<Hotel> getHotelList() {
+    return hotelList;
   }
 
-  public void setFlightList(List<Flight> flightList) {
-    this.flightList = flightList;
+  public void setHotelList(List<Hotel> hotelList) {
+    this.hotelList = hotelList;
   }
 
   public List<Booking> getBookingsList() {
@@ -88,8 +88,8 @@ public class Database {
     return this.clientList.stream();
   }
   
-  public Stream<Flight> getFlights() {
-    return this.flightList.stream();
+  public Stream<Hotel> getHotels() {
+    return this.hotelList.stream();
   }
     
   public Stream<Booking> getBookings() {

@@ -14,17 +14,17 @@ public class Booking {
   private static int ids;
   private int bookingId;
   private Client client;
-  private Flight flight;
+  private Hotel hotel;
 
-  public Booking(Client client, Flight flight) {
+  public Booking(Client client, Hotel hotel) {
     this.client = client;
-    this.flight = flight;
+    this.hotel = hotel;
     this.bookingId = ++ids;
   }
 
   public Booking(Booking booking) {
     this.client = booking.client;
-    this.flight = booking.flight;
+    this.hotel = booking.hotel;
     this.bookingId = ++ids;
   }
 
@@ -37,12 +37,12 @@ public class Booking {
     this.client = client;
   }
 
-  public Flight getFlight() {
-    return flight;
+  public Hotel getHotel() {
+    return hotel;
   }
 
-  public void setFlight(Flight flight) {
-    this.flight = flight;
+  public void setHotel(Hotel hotel) {
+    this.hotel = hotel;
   }
 
   public int getBookingId() {

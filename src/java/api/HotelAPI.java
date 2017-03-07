@@ -7,7 +7,7 @@
 package api;
 
 import com.google.gson.Gson;
-import dao.FlightDAO;
+import dao.HotelDAO;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.stream.Collectors;
@@ -24,24 +24,24 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import model.Flight;
+import model.Hotel;
 import org.glassfish.jersey.server.ManagedAsync;
 
 /**
  *
  * @author Steven Kritikos
  */
-@Path("flights")
-public class FlightAPi {
+@Path("hotels")
+public class HotelAPI {
   @EJB
-  private FlightDAO flightDAO;
+  private HotelDAO hotelDAO;
   
    @GET
   @ManagedAsync
   @Produces(MediaType.APPLICATION_JSON)
-  public void getFlights(@Suspended final AsyncResponse asyncResponse) {
+  public void getHotels(@Suspended final AsyncResponse asyncResponse) {
     Gson gson = new Gson();
-    flightDAO.getFlights().thenApply(clientStream -> asyncResponse.resume(
+    hotelDAO.getHotels().thenApply(clientStream -> asyncResponse.resume(
       Response.ok()
               .entity(gson.toJson( clientStream.collect(Collectors.toList()) ))
               .build()
@@ -57,9 +57,9 @@ public class FlightAPi {
   @ManagedAsync
   @Path("{id}")
   @Produces(MediaType.APPLICATION_JSON) 
-  public void getFlightById(@Suspended final AsyncResponse asyncResponse, @PathParam("id") int id ) {
+  public void getHotelById(@Suspended final AsyncResponse asyncResponse, @PathParam("id") int id ) {
     Gson gson = new Gson();
-    flightDAO.getFlightById(id).thenApply(client -> {
+    hotelDAO.getHotelById(id).thenApply(client -> {
       Response response;
       if (client != null) {
         response = Response.ok().entity(gson.toJson(client)).build();
@@ -78,14 +78,14 @@ public class FlightAPi {
   @POST
   @ManagedAsync
   @Consumes(MediaType.APPLICATION_JSON)
-  public void createFlight(@Suspended final AsyncResponse asyncResponse, String newFlight) {
+  public void createHotel(@Suspended final AsyncResponse asyncResponse, String newHotel) {
     Gson gson = new Gson();
-    Flight flight =  new Flight( gson.fromJson(newFlight, Flight.class) );
-    flightDAO.insertFlight(flight).thenApply(success -> {
+    Hotel hotel =  new Hotel( gson.fromJson(newHotel, Hotel.class) );
+    hotelDAO.insertHotel(hotel).thenApply(success -> {
       Response response;
       if (success) {
         try {
-          response = Response.created(new URI("/api/clients/" + flight.getFlightId())).build();
+          response = Response.created(new URI("/api/clients/" + hotel.getHotelId())).build();
         } catch (URISyntaxException ex) {
           ex.printStackTrace();
           response = Response.status(Response.Status.NOT_FOUND).build();
@@ -105,10 +105,10 @@ public class FlightAPi {
   @PUT
   @ManagedAsync
   @Consumes(MediaType.APPLICATION_JSON)
-  public void updateFlight(@Suspended final AsyncResponse asyncResponse, String updateFlight) {
+  public void updateHotel(@Suspended final AsyncResponse asyncResponse, String updateHotel) {
     Gson gson = new Gson();
-    Flight flight = gson.fromJson(updateFlight, Flight.class);
-    flightDAO.updateFlight(flight).thenApply(success -> { 
+    Hotel hotel = gson.fromJson(updateHotel, Hotel.class);
+    hotelDAO.updateHotel(hotel).thenApply(success -> { 
       Response response;
       if (success) {
         response = Response.status(Response.Status.NO_CONTENT).build();
@@ -128,8 +128,8 @@ public class FlightAPi {
   @ManagedAsync
   @Path("{id}")
   @Consumes(MediaType.APPLICATION_JSON)
-  public void deleteFlight(@Suspended final AsyncResponse asyncResponse, @PathParam("id") int id) {
-    flightDAO.getFlightById(id).thenApply(flight -> flightDAO.deleteFlight(flight).thenApply(success -> {
+  public void deleteHotel(@Suspended final AsyncResponse asyncResponse, @PathParam("id") int id) {
+    hotelDAO.getHotelById(id).thenApply(hotel -> hotelDAO.deleteHotel(hotel).thenApply(success -> {
         Response response;
         if (success) {
           response = Response.status(Response.Status.OK).build();
