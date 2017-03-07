@@ -26,6 +26,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import model.Hotel;
 import org.glassfish.jersey.server.ManagedAsync;
+import service.BookingService;
 
 /**
  *
@@ -35,8 +36,10 @@ import org.glassfish.jersey.server.ManagedAsync;
 public class HotelAPI {
   @EJB
   private HotelDAO hotelDAO;
+  @EJB
+  private BookingService bookingService; 
   
-   @GET
+  @GET
   @ManagedAsync
   @Produces(MediaType.APPLICATION_JSON)
   public void getHotels(@Suspended final AsyncResponse asyncResponse) {
@@ -144,5 +147,25 @@ public class HotelAPI {
                 .build()
       ))
     );
+  }
+  
+  @GET
+  @ManagedAsync
+  @Path("{id}/clients")
+  public void getClientsForHotel(@Suspended final AsyncResponse asyncResponse,
+                                 @PathParam("id") int hotelId) {
+    Gson gson = new Gson();
+    bookingService.getClientsForHotel(hotelId).thenApply(clientStream ->
+      asyncResponse.resume( 
+        Response.ok()
+                .entity( gson.toJson(clientStream) )
+                .build()
+      )
+    )
+    .exceptionally(ex -> asyncResponse.resume(
+      Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+              .entity(ex)
+              .build()
+    ));
   }
 }
