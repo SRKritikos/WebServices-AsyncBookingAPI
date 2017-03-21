@@ -45,5 +45,12 @@ public class Hotel {
   public static int getIds() {
     return ids;
   }
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Hotel) {
+            return ((Hotel)o).getHotelId() == this.hotelId;
+        }
+        return false;
+    }
   
 }

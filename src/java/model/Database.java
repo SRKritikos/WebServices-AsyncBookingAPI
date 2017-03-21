@@ -6,9 +6,11 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
+import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 
 /**
@@ -22,6 +24,11 @@ public class Database {
   private List<Booking> bookingsList;
 
   public Database() {
+   
+  }
+  
+  @PostConstruct
+  public void init() {
     initClients();
     initHotels();
     initBookings();
@@ -43,8 +50,10 @@ public class Database {
   
   private void initBookings() {
     bookingsList = new ArrayList<>();
+    Calendar calendar = Calendar.getInstance();
     for (int i = 0; i < 50; i++) {
-      bookingsList.add(new Booking(clientList.get(i), hotelList.get(i)));
+      calendar.add(Calendar.HOUR, 5);
+      bookingsList.add(new Booking(clientList.get(i), hotelList.get(i), calendar.getTime()));
     }
   }
   

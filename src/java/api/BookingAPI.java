@@ -9,6 +9,8 @@ import com.google.gson.Gson;
 import dao.BookingDAO;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.stream.Collectors;
 import javax.ejb.EJB;
 import javax.ws.rs.Produces;
@@ -19,12 +21,14 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import model.Booking;
 import org.glassfish.jersey.server.ManagedAsync;
+import service.BookingService;
 
 /**
  * REST Web Service
@@ -35,6 +39,8 @@ import org.glassfish.jersey.server.ManagedAsync;
 public class BookingAPI {
   @EJB
   private BookingDAO bookingDAO;
+  @EJB
+  private BookingService bookingService;
   
   @GET
   @ManagedAsync
@@ -71,6 +77,37 @@ public class BookingAPI {
       Response.status(Response.Status.INTERNAL_SERVER_ERROR)
               .entity(ex)
               .build()
+    ));
+  }
+  
+  @GET
+  @ManagedAsync
+  @Path("date")
+  @Produces(MediaType.APPLICATION_JSON)
+  public void getBookingsForDate(@Suspended final AsyncResponse asyncResponse,
+    @QueryParam("day") int day, @QueryParam("month") int month, @QueryParam("year") int year) {
+      System.out.println(day + " " + month + " " + year);
+     Calendar startCal = Calendar.getInstance();
+     Calendar endCal = Calendar.getInstance();
+     startCal.set(Calendar.YEAR, year);
+     startCal.set(Calendar.DAY_OF_MONTH, day);
+     startCal.set(Calendar.MONTH, month - 1);
+     Date startDate = startCal.getTime();
+     endCal.setTime(startDate);
+     endCal.add(Calendar.DAY_OF_MONTH, 1);
+     Date endDate = endCal.getTime();
+     Gson gson = new Gson();
+     System.out.println("Getting date" + startDate + " " + endDate);
+     this.bookingService.getBookingsForDate(startDate, endDate).thenApply(bookingStream -> 
+        asyncResponse
+            .resume(Response.ok()
+                            .entity(gson.toJson(bookingStream.collect(Collectors.toList())))
+                            .build())
+     )
+        .exceptionally(ex -> asyncResponse.resume(
+        Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                .entity(ex)
+                .build()
     ));
   }
   

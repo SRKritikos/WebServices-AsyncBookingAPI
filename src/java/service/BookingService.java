@@ -10,6 +10,7 @@ import com.sun.xml.internal.ws.util.CompletedFuture;
 import dao.BookingDAO;
 import dao.ClientDAO;
 import dao.HotelDAO;
+import java.util.Date;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 import javax.ejb.EJB;
@@ -46,4 +47,11 @@ public class BookingService {
             bookings.filter(booking -> booking.getClient().equals(client))
                     .map(b -> b.getHotel()));
   }
+
+    public CompletableFuture<Stream<Booking>> getBookingsForDate(Date startDate, Date endDate) {
+        CompletableFuture<Stream<Booking>> bookingsFuture = this.bookingDAO.getBookings();
+        return bookingsFuture.thenApply(bookingStream -> 
+                bookingStream.filter(booking -> booking.getBookingDate().after(startDate)
+                                  && booking.getBookingDate().before(endDate)));
+    }
 }

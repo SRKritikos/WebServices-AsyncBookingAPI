@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import dao.HotelDAO;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
@@ -153,7 +154,7 @@ public class HotelAPI {
   @ManagedAsync
   @Path("{id}/clients")
   public void getClientsForHotel(@Suspended final AsyncResponse asyncResponse,
-                                 @PathParam("id") int hotelId) {
+                                 @PathParam("id") int hotelId) throws InterruptedException, ExecutionException {
     Gson gson = new Gson();
     bookingService.getClientsForHotel(hotelId).thenApply(clientStream ->
       asyncResponse.resume( 

@@ -44,4 +44,14 @@ public class Client {
   public int getIds() {
     return ids;
   }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Client) {
+            return ((Client)o).getCliendId() == this.cliendId;
+        }
+        return false;
+    }
+  
+  
 }

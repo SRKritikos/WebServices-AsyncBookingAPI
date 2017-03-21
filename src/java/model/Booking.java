@@ -5,6 +5,8 @@
  */
 package model;
 
+import java.util.Date;
+
 /**
  *
  * @author srostantkritikos06
@@ -15,10 +17,12 @@ public class Booking {
   private int bookingId;
   private Client client;
   private Hotel hotel;
+  private Date bookingDate;
 
-  public Booking(Client client, Hotel hotel) {
+  public Booking(Client client, Hotel hotel, Date bookingDate) {
     this.client = client;
     this.hotel = hotel;
+    this.bookingDate = bookingDate;
     this.bookingId = ++ids;
   }
 
@@ -26,6 +30,7 @@ public class Booking {
     this.client = booking.client;
     this.hotel = booking.hotel;
     this.bookingId = ++ids;
+    this.bookingDate = booking.getBookingDate();
   }
 
   
@@ -56,4 +61,20 @@ public class Booking {
   public static int getIds() {
     return ids;
   } 
+
+    public Date getBookingDate() {
+        return bookingDate;
+    }
+
+    public void setBookingDate(Date bookingDate) {
+        this.bookingDate = bookingDate;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Booking) {
+            return ((Booking)o).getBookingId()== this.bookingId;
+        }
+        return false;
+    }
 }
