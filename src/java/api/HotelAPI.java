@@ -33,7 +33,7 @@ import service.BookingService;
  *
  * @author Steven Kritikos
  */
-@Path("hotels")
+@Path("hotel")
 public class HotelAPI {
   @EJB
   private HotelDAO hotelDAO;
@@ -89,7 +89,7 @@ public class HotelAPI {
       Response response;
       if (success) {
         try {
-          response = Response.created(new URI("/api/clients/" + hotel.getHotelId())).build();
+          response = Response.created(new URI("/api/client/" + hotel.getHotelId())).build();
         } catch (URISyntaxException ex) {
           ex.printStackTrace();
           response = Response.status(Response.Status.NOT_FOUND).build();
@@ -159,7 +159,7 @@ public class HotelAPI {
     bookingService.getClientsForHotel(hotelId).thenApply(clientStream ->
       asyncResponse.resume( 
         Response.ok()
-                .entity( gson.toJson( clientStream.collect(Collectors.toList() )) )
+                .entity( gson.toJson( clientStream.collect(Collectors.toList())) )
                 .build()
       )
     )

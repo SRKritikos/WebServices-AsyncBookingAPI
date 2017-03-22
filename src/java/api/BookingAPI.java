@@ -35,7 +35,7 @@ import service.BookingService;
  *
  * @author Steven
  */
-@Path("bookings")
+@Path("booking")
 public class BookingAPI {
   @EJB
   private BookingDAO bookingDAO;
@@ -121,7 +121,7 @@ public class BookingAPI {
       Response response;
       if (success) {
         try {
-          response = Response.created(new URI("/api/bookings/" + booking.getBookingId())).build();
+          response = Response.created(new URI("/api/booking/" + booking.getBookingId())).build();
         } catch (URISyntaxException ex) {
           ex.printStackTrace();
           response = Response.status(Response.Status.CREATED).build();

@@ -89,7 +89,7 @@ public class ClientAPI {
       Response response;
       if (success) {
         try {
-          response = Response.created(new URI("/api/clients/" + client.getCliendId())).build();
+          response = Response.created(new URI("/api/client/" + client.getCliendId())).build();
         } catch (URISyntaxException ex) {
           ex.printStackTrace();
           response = Response.status(Response.Status.NOT_FOUND).build();

@@ -6,7 +6,6 @@
 
 package service;
 
-import com.sun.xml.internal.ws.util.CompletedFuture;
 import dao.BookingDAO;
 import dao.ClientDAO;
 import dao.HotelDAO;
