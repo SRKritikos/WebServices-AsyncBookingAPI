@@ -159,7 +159,7 @@ public class HotelAPI {
     bookingService.getClientsForHotel(hotelId).thenApply(clientStream ->
       asyncResponse.resume( 
         Response.ok()
-                .entity( gson.toJson(clientStream) )
+                .entity( gson.toJson( clientStream.collect(Collectors.toList() )) )
                 .build()
       )
     )

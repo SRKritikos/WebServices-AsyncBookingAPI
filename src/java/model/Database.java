@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Stream;
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
@@ -36,14 +37,14 @@ public class Database {
   
   private void initClients() {
     clientList = new ArrayList<>();
-    for (int i = 0; i < 3000; i++) {
+    for (int i = 0; i < 100; i++) {
       clientList.add(new Client("Client " + i));
     }
   }
   
   private void initHotels() {
     this.hotelList = new ArrayList<>();
-    for (int i = 0; i < 100; i++) {
+    for (int i = 0; i < 15; i++) {
       hotelList.add(new Hotel("Company " + i));
     } 
   }
@@ -51,9 +52,11 @@ public class Database {
   private void initBookings() {
     bookingsList = new ArrayList<>();
     Calendar calendar = Calendar.getInstance();
+    Random randomClient = new Random();
+    Random randomHotel = new Random();
     for (int i = 0; i < 50; i++) {
       calendar.add(Calendar.HOUR, 5);
-      bookingsList.add(new Booking(clientList.get(i), hotelList.get(i), calendar.getTime()));
+      bookingsList.add(new Booking(clientList.get(randomClient.nextInt(100)), hotelList.get(randomHotel.nextInt(15)), calendar.getTime()));
     }
   }
   
